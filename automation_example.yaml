@@ -1,0 +1,23 @@
+alias: "Verjaardag Notificatie"
+description: "Stuurt een notificatie als er iemand jarig is"
+mode: single
+trigger:
+  - platform: time
+    at: "09:00:00"  # Pas de tijd aan naar wens
+condition:
+  - condition: template
+    # Controleer of de datum van de 'Next Birthday' sensor gelijk is aan vandaag
+    value_template: "{{ states('sensor.next_birthday') == now().date() | string }}"
+action:
+  - service: notify.mobile_app_iphone17
+    data:
+      title: "🍰 Er is er een jarig!"
+      message: >
+        {% set names = state_attr('sensor.next_birthday', 'names') %}
+        {% set age = state_attr('sensor.next_birthday', 'age_turning') %}
+        
+        {% if names | length == 1 %}
+          🎉 Hieperdepiep hoera! {{ names[0] }} is vandaag jarig en wordt {{ age }} jaar!
+        {% else %}
+          🎉 Feest! Vandaag zijn jarig: {{ names | join(', ') }}.
+        {% endif %}

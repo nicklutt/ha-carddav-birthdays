@@ -1,0 +1,14 @@
+{
+  "domain": "carddav_birthdays",
+  "name": "CardDAV Birthdays",
+  "codeowners": [],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/nicklutt/ha-carddav-birthdays",
+  "issue_tracker": "https://github.com/nicklutt/ha-carddav-birthdays/issues",
+  "iot_class": "local_polling",
+  "requirements": [
+    "vobject==0.9.6.1"
+  ],
+  "version": "0.1.0"
+}
