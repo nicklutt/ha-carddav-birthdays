@@ -106,11 +106,19 @@ class CardDavBirthdaySensor(CoordinatorEntity, SensorEntity):
         try:
             # birthday string format depends on vobject.
             # Usually YYYY-MM-DD. Sometimes --MM-DD (no year).
+            # Also support YYYYMMDD (8 digits without dashes).
             bday_str = str(self.contact.birthday)
             today = date.today()
             
+            # Handle YYYYMMDD (8 digits without dashes)
+            if len(bday_str) == 8 and bday_str.isdigit():
+                try:
+                    bday = datetime.strptime(bday_str, "%Y%m%d").date()
+                    has_year = True
+                except ValueError:
+                    return None, None
             # Handle YYYY-MM-DD
-            if len(bday_str) >= 10:
+            elif len(bday_str) >= 10:
                 # Naive parsing
                 # Some vCards use T timestamp, split at T
                 bday_date_part = bday_str.split('T')[0]
@@ -198,7 +206,12 @@ class CardDavNextBirthdaySensor(CoordinatorEntity, SensorEntity):
             try:
                 bday_str = str(contact.birthday)
                 
-                if len(bday_str) >= 10:
+                # Handle YYYYMMDD (8 digits without dashes)
+                if len(bday_str) == 8 and bday_str.isdigit():
+                    bday = datetime.strptime(bday_str, "%Y%m%d").date()
+                    has_year = True
+                # Handle YYYY-MM-DD
+                elif len(bday_str) >= 10:
                     bday_date_part = bday_str.split('T')[0]
                     bday = datetime.strptime(bday_date_part, "%Y-%m-%d").date()
                     has_year = True
